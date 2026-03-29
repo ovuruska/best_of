@@ -39,6 +39,6 @@ export interface TournamentState {
 }
 
 export type TournamentAction =
-  | { type: 'START_TOURNAMENT'; tournament: Tournament }
+  | { type: 'START_TOURNAMENT'; tournament: Tournament; size: number }
   | { type: 'PICK_WINNER'; winnerId: string }
   | { type: 'RESET' };

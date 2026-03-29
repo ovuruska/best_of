@@ -59,7 +59,7 @@ function buildNextRound(prevRound: Round): Round {
 function reducer(state: TournamentState, action: TournamentAction): TournamentState {
   switch (action.type) {
     case 'START_TOURNAMENT': {
-      const shuffled = shuffle(action.tournament.items);
+      const shuffled = shuffle(action.tournament.items).slice(0, action.size);
       const firstRound = buildRound(shuffled, 1);
       return {
         tournament: action.tournament,
@@ -126,7 +126,7 @@ function reducer(state: TournamentState, action: TournamentAction): TournamentSt
 
 interface TournamentContextValue {
   state: TournamentState;
-  startTournament: (tournament: Tournament) => void;
+  startTournament: (tournament: Tournament, size: number) => void;
   pickWinner: (winnerId: string) => void;
   reset: () => void;
   currentMatch: Match | null;
@@ -147,7 +147,7 @@ export function TournamentProvider({ children }: { children: ReactNode }) {
       value={{
         state,
         currentMatch,
-        startTournament: (t) => dispatch({ type: 'START_TOURNAMENT', tournament: t }),
+        startTournament: (t, size) => dispatch({ type: 'START_TOURNAMENT', tournament: t, size }),
         pickWinner: (id) => dispatch({ type: 'PICK_WINNER', winnerId: id }),
         reset: () => dispatch({ type: 'RESET' }),
       }}

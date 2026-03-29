@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import confetti from 'canvas-confetti';
@@ -13,6 +13,8 @@ export function GamePage() {
   const { state, currentMatch, pickWinner } = useTournament();
   const [matchKey, setMatchKey] = useState(0);
   const [activeTransition, setActiveTransition] = useState<TransitionType | null>(null);
+  const [pickedSide, setPickedSide] = useState<'left' | 'right' | null>(null);
+  const pendingPick = useRef<{ winnerId: string; isLeft: boolean } | null>(null);
 
   // Navigate to winner screen
   useEffect(() => {
@@ -76,34 +78,45 @@ export function GamePage() {
   }
 
   function handlePick(winnerId: string) {
+    if (pickedSide) return; // prevent double-click during swipe
+
     const isLeft = winnerId === currentMatch?.item1.id;
-    const isLastMatchInRound = currentIndex === totalMatches - 1;
-
-    // Determine next round type BEFORE dispatching — batched with pickWinner in the
-    // same React 18 render, so the overlay appears before the new match is shown.
-    if (isLastMatchInRound) {
-      const nextMatchCount = Math.floor(totalMatches / 2);
-      if (nextMatchCount === 4) {
-        setActiveTransition('quarterfinal');
-        playQuarterFinalSound();
-      } else if (nextMatchCount === 2) {
-        setActiveTransition('semifinal');
-        playSemiFinalSound();
-      } else if (nextMatchCount === 1) {
-        setActiveTransition('final');
-        playFinalSound();
-      }
-    }
-
+    setPickedSide(isLeft ? 'left' : 'right');
     spawnPickConfetti(isLeft);
     playPickSound(state.currentRoundIndex);
-    setMatchKey(k => k + 1);
-    pickWinner(winnerId);
+
+    // Store pick data for delayed dispatch
+    pendingPick.current = { winnerId, isLeft };
+
+    // Let the swipe animation play, then advance state
+    setTimeout(() => {
+      if (!pendingPick.current) return;
+
+      const isLastMatchInRound = currentIndex === totalMatches - 1;
+      if (isLastMatchInRound) {
+        const nextMatchCount = Math.floor(totalMatches / 2);
+        if (nextMatchCount === 4) {
+          setActiveTransition('quarterfinal');
+          playQuarterFinalSound();
+        } else if (nextMatchCount === 2) {
+          setActiveTransition('semifinal');
+          playSemiFinalSound();
+        } else if (nextMatchCount === 1) {
+          setActiveTransition('final');
+          playFinalSound();
+        }
+      }
+
+      pickWinner(pendingPick.current.winnerId);
+      setMatchKey(k => k + 1);
+      setPickedSide(null);
+      pendingPick.current = null;
+    }, 450);
   }
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white flex flex-col">
-      {/* Epic round transition overlay — rendered before new match, blocks all clicks */}
+      {/* Epic round transition overlay */}
       <AnimatePresence>
         {activeTransition && (
           <RoundTransition
@@ -151,7 +164,7 @@ export function GamePage() {
       </div>
 
       {/* VS area */}
-      <main className="flex-1 flex flex-col items-center justify-center px-4 py-8 gap-6">
+      <main className="flex-1 flex flex-col items-center justify-center px-4 py-4 sm:py-8 gap-4 sm:gap-6 overflow-hidden">
         <motion.p
           className="text-white/30 text-sm uppercase tracking-widest"
           animate={{ opacity: [0.3, 0.8, 0.3] }}
@@ -164,7 +177,7 @@ export function GamePage() {
           {currentMatch && (
             <motion.div
               key={matchKey}
-              className="flex flex-col md:flex-row gap-6 w-full max-w-4xl items-stretch justify-center"
+              className="flex flex-col md:flex-row gap-4 sm:gap-6 w-full max-w-4xl items-center justify-center"
               initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.96 }}
@@ -175,11 +188,13 @@ export function GamePage() {
                 side="left"
                 onPick={() => handlePick(currentMatch.item1.id)}
                 accentColor={accentColor}
+                picked={pickedSide === 'left'}
+                rejected={pickedSide === 'right'}
               />
 
               <div className="flex items-center justify-center shrink-0">
                 <motion.div
-                  className="text-3xl font-black text-white/20 select-none"
+                  className="text-2xl sm:text-3xl font-black text-white/20 select-none"
                   animate={{ scale: [1, 1.15, 1] }}
                   transition={{ repeat: Infinity, duration: 1.8 }}
                 >
@@ -192,6 +207,8 @@ export function GamePage() {
                 side="right"
                 onPick={() => handlePick(currentMatch.item2.id)}
                 accentColor={accentColor}
+                picked={pickedSide === 'right'}
+                rejected={pickedSide === 'left'}
               />
             </motion.div>
           )}
