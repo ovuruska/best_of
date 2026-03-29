@@ -43,12 +43,15 @@ export function GamePage() {
 
   function spawnPickConfetti(isLeft: boolean) {
     const rIdx = state.currentRoundIndex;
-    const originX = isLeft ? 0.25 : 0.75;
+    const isMobile = window.innerWidth < 768;
+    const origin = isMobile
+      ? { x: 0.5, y: isLeft ? 0.3 : 0.7 }
+      : { x: isLeft ? 0.25 : 0.75, y: 0.62 };
 
     confetti({
       particleCount: 10 + rIdx * 8,
       spread: 40 + rIdx * 12,
-      origin: { x: originX, y: 0.62 },
+      origin,
       colors: [accentColor, '#ffffff', '#ffd700', '#ff6b6b'],
       startVelocity: 18 + rIdx * 6,
       gravity: 0.8,
@@ -56,11 +59,14 @@ export function GamePage() {
     });
 
     if (rIdx >= 1) {
+      const secondOrigin = isMobile
+        ? { x: 0.5, y: isLeft ? 0.35 : 0.72 }
+        : { x: isLeft ? 0.25 : 0.75, y: 0.65 };
       confetti({
         particleCount: 6 + rIdx * 5,
         spread: 60,
         angle: 90,
-        origin: { x: originX, y: 0.65 },
+        origin: secondOrigin,
         colors: [accentColor, '#ffd700'],
         startVelocity: 25 + rIdx * 8,
         gravity: 0.6,
@@ -110,32 +116,32 @@ export function GamePage() {
       </AnimatePresence>
 
       {/* Top bar */}
-      <header className="px-6 py-4 flex items-center justify-between border-b border-white/5">
+      <header className="px-3 sm:px-6 py-3 sm:py-4 flex items-center justify-between border-b border-white/5 gap-2">
         <button
           onClick={() => navigate('/')}
-          className="text-white/40 hover:text-white transition-colors text-sm flex items-center gap-2"
+          className="text-white/40 hover:text-white transition-colors text-sm flex items-center gap-1 sm:gap-2 min-w-[44px] min-h-[44px] justify-center shrink-0"
         >
-          ← Back
+          ← <span className="hidden sm:inline">Back</span>
         </button>
-        <div className="text-center">
-          <p className="text-white font-bold text-sm">{state.tournament.name}</p>
+        <div className="text-center min-w-0 flex-1">
+          <p className="text-white font-bold text-xs sm:text-sm truncate">{state.tournament.name}</p>
           <motion.p
             key={round.roundName}
             initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-xs font-bold uppercase tracking-widest"
+            className="text-[10px] sm:text-xs font-bold uppercase tracking-widest"
             style={{ color: accentColor }}
           >
             {round.roundName}
           </motion.p>
         </div>
-        <div className="text-white/40 text-sm tabular-nums">
-          {currentIndex + 1} / {totalMatches}
+        <div className="text-white/40 text-xs sm:text-sm tabular-nums shrink-0">
+          {currentIndex + 1}/{totalMatches}
         </div>
       </header>
 
       {/* Progress bar */}
-      <div className="h-1 bg-white/5 w-full">
+      <div className="h-1.5 sm:h-1 bg-white/5 w-full">
         <motion.div
           className="h-full"
           style={{ background: accentColor }}

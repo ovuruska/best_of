@@ -22,9 +22,9 @@ export function TournamentCard({ tournament, onClick }: Props) {
         background: `linear-gradient(135deg, ${tournament.gradientFrom}, ${tournament.gradientTo})`,
       }}
     >
-      {/* Glow on hover */}
+      {/* Glow on hover/active */}
       <motion.div
-        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl pointer-events-none"
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-opacity duration-300 rounded-2xl pointer-events-none"
         style={{ boxShadow: `0 0 60px ${tournament.accentColor}55, inset 0 0 30px ${tournament.accentColor}22` }}
       />
 

@@ -25,7 +25,9 @@ const CRACKS = Array.from({ length: CRACK_COUNT }, (_, i) => {
   };
 });
 
-const SHARD_COUNT = 20;
+const IS_MOBILE = typeof window !== 'undefined' && window.innerWidth < 768;
+
+const SHARD_COUNT = IS_MOBILE ? 8 : 20;
 const SHARDS = Array.from({ length: SHARD_COUNT }, (_, i) => {
   const angle = (i / SHARD_COUNT) * 360 + 8;
   const rad = (angle * Math.PI) / 180;
@@ -41,7 +43,7 @@ const SHARDS = Array.from({ length: SHARD_COUNT }, (_, i) => {
   };
 });
 
-const FLAME_COUNT = 16;
+const FLAME_COUNT = IS_MOBILE ? 6 : 16;
 const FLAME_COLORS = ['#ffee00', '#ff9900', '#ff5500', '#ff2200'];
 const FLAMES = Array.from({ length: FLAME_COUNT }, (_, i) => ({
   id: i,
@@ -56,7 +58,7 @@ const FLAMES = Array.from({ length: FLAME_COUNT }, (_, i) => ({
   blur: 5 + (i % 4) * 4,
 }));
 
-const EMBER_COUNT = 30;
+const EMBER_COUNT = IS_MOBILE ? 12 : 30;
 const EMBERS = Array.from({ length: EMBER_COUNT }, (_, i) => ({
   id: i,
   x: (i / EMBER_COUNT) * 106 - 3,
@@ -281,8 +283,8 @@ function ImpactRings({ active, accentColor }: { active: boolean; accentColor: st
               key={i}
               className="absolute rounded-2xl"
               style={{ border: `${3 - i * 0.5}px solid ${accentColor}` }}
-              initial={{ width: 224, height: 224, opacity: 0.9 }}
-              animate={{ width: 224 + 300 + i * 120, height: 224 + 300 + i * 120, opacity: 0 }}
+              initial={{ width: IS_MOBILE ? 144 : 224, height: IS_MOBILE ? 144 : 224, opacity: 0.9 }}
+              animate={{ width: (IS_MOBILE ? 144 : 224) + 300 + i * 120, height: (IS_MOBILE ? 144 : 224) + 300 + i * 120, opacity: 0 }}
               transition={{ duration: 1.0, delay: 0.2 + i * 0.12, ease: 'easeOut' }}
             />
           ))}
@@ -466,7 +468,7 @@ export function WinnerPage() {
               initial={{ y: -120, opacity: 0, scale: 2.5, rotate: -20 }}
               animate={{ y: 0, opacity: 1, scale: 1, rotate: 0 }}
               transition={{ type: 'spring', stiffness: 380, damping: 16 }}
-              className="text-7xl select-none"
+              className="text-5xl sm:text-6xl md:text-7xl select-none"
               style={{ filter: `drop-shadow(0 0 24px ${accentColor})` }}
             >
               👑
@@ -512,7 +514,7 @@ export function WinnerPage() {
               <motion.img
                 src={state.winner.imageUrl}
                 alt={state.winner.name}
-                className="w-56 h-56 object-cover rounded-2xl relative z-10"
+                className="w-36 h-36 sm:w-44 sm:h-44 md:w-56 md:h-56 object-cover rounded-2xl relative z-10"
                 animate={{
                   boxShadow: [
                     `0 0 0 3px ${accentColor}, 0 0 50px ${accentColor}99, 0 40px 100px rgba(0,0,0,0.9)`,
@@ -535,7 +537,7 @@ export function WinnerPage() {
               transition={{ type: 'spring', stiffness: 320, damping: 22 }}
             >
               <h1
-                className="text-5xl md:text-6xl font-black leading-tight tracking-tight"
+                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight"
                 style={{
                   textShadow: `0 0 30px ${accentColor}cc, 0 0 80px ${accentColor}66, 0 4px 20px rgba(0,0,0,0.8)`,
                 }}
@@ -579,7 +581,7 @@ export function WinnerPage() {
               whileHover={{ scale: 1.07, boxShadow: `0 0 40px ${accentColor}99` }}
               whileTap={{ scale: 0.93 }}
               onClick={handlePlayAgain}
-              className="mt-4 px-10 py-3 rounded-2xl font-black text-lg text-black transition-all duration-200"
+              className="mt-4 px-8 sm:px-10 py-3 rounded-2xl font-black text-base sm:text-lg text-black transition-all duration-200 min-h-[44px]"
               style={{ background: `linear-gradient(135deg, ${accentColor}, #ff4500)` }}
             >
               Play Again
