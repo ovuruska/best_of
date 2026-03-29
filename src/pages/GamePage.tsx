@@ -164,7 +164,7 @@ export function GamePage() {
       </div>
 
       {/* VS area */}
-      <main className="flex-1 flex flex-col items-center justify-center px-4 py-4 sm:py-8 gap-4 sm:gap-6 overflow-hidden">
+      <main className="flex-1 flex flex-col items-center justify-center px-4 py-4 sm:py-8 gap-4 sm:gap-6 overflow-x-clip">
         <motion.p
           className="text-white/30 text-sm uppercase tracking-widest"
           animate={{ opacity: [0.3, 0.8, 0.3] }}
@@ -177,11 +177,11 @@ export function GamePage() {
           {currentMatch && (
             <motion.div
               key={matchKey}
-              className="flex flex-col md:flex-row gap-4 sm:gap-6 w-full max-w-4xl items-center justify-center"
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.96 }}
-              transition={{ duration: 0.18 }}
+              className="flex flex-col md:flex-row gap-4 sm:gap-6 w-full max-w-4xl items-center justify-center overflow-visible"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
             >
               <MatchupCard
                 item={currentMatch.item1}
