@@ -18,7 +18,7 @@ export function HomePage() {
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white flex flex-col">
       {/* Header */}
-      <header className="pt-16 pb-10 text-center px-4">
+      <header className="pt-10 sm:pt-16 pb-6 sm:pb-10 text-center px-4">
         <motion.div
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -27,7 +27,7 @@ export function HomePage() {
           <span className="inline-block text-xs font-bold uppercase tracking-[0.3em] text-white/40 mb-4">
             The Ultimate Bracket
           </span>
-          <h1 className="text-6xl md:text-7xl font-black tracking-tight">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight">
             <span className="text-white">Best</span>
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500">
               {' '}Of

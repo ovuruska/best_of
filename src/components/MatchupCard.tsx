@@ -18,7 +18,7 @@ export function MatchupCard({ item, side, onPick, accentColor }: Props) {
       transition={{ type: 'spring', stiffness: 260, damping: 22 }}
       whileHover={{ scale: 1.03 }}
       whileTap={{ scale: 0.96 }}
-      className="relative flex-1 cursor-pointer rounded-2xl overflow-hidden border border-white/10 shadow-2xl group min-h-[420px] max-w-md w-full"
+      className="relative flex-1 cursor-pointer rounded-2xl overflow-hidden border border-white/10 shadow-2xl group min-h-[180px] sm:min-h-[280px] md:min-h-[420px] max-w-md w-full"
     >
       {/* Image */}
       <img
@@ -37,18 +37,18 @@ export function MatchupCard({ item, side, onPick, accentColor }: Props) {
       />
 
       {/* Content */}
-      <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
+      <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 z-10">
         <motion.div
           initial={{ y: 10, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.15 }}
         >
-          <p className="text-white/60 text-sm mb-1">{item.subtitle}</p>
-          <h3 className="text-white text-2xl font-black leading-tight">{item.name}</h3>
+          <p className="text-white/60 text-xs sm:text-sm mb-1">{item.subtitle}</p>
+          <h3 className="text-white text-lg sm:text-xl md:text-2xl font-black leading-tight">{item.name}</h3>
         </motion.div>
 
         <motion.div
-          className="mt-4 flex items-center justify-center gap-2 text-sm font-bold py-2 px-4 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+          className="mt-3 sm:mt-4 flex items-center justify-center gap-2 text-sm font-bold py-2 px-4 rounded-xl opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200"
           style={{ background: `${accentColor}cc`, color: '#fff' }}
         >
           Pick This One ✓
