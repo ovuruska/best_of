@@ -6,7 +6,7 @@ import { WinnerPage } from './pages/WinnerPage';
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/best_of">
       <TournamentProvider>
         <Routes>
           <Route path="/" element={<HomePage />} />
